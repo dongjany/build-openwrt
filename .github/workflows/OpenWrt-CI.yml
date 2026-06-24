@@ -15,7 +15,7 @@ on:
         description: "OpenWrt Source Repository (username/repo)"
         required: false
         default: "dongjany/openwrt"
-      # 源码分支 默认改为24.10
+      # 源码分支 默认24.10
       source_branch:
         description: "Git Branch To Pull"
         required: false
@@ -227,9 +227,9 @@ jobs:
             📂 源码仓库：https://github.com/${{ env.SOURCE_REPO }}
             🌿 编译分支：${{ env.SOURCE_BRANCH }}
             💾 根分区大小：${{ env.ROOTFS_SIZE }} MB
-            ⚙️ 基础平台配置：${{ if env.BASE_CONFIG != '' }}已填写${{ else }}无${{ endif }}
-            📦 额外软件包：${{ if env.EXTRA_PKGS != '' }}已配置${{ else }}无${{ endif }}
-            🛠️ 自定义DIY脚本：${{ if env.DIY_SCRIPT != '' }}已启用${{ else }}未填写${{ endif }}
+            ⚙️ 基础平台配置文本：${{ env.BASE_CONFIG }}
+            📦 额外软件包列表：${{ env.EXTRA_PKGS }}
+            🛠️ 自定义DIY脚本内容：${{ env.DIY_SCRIPT }}
 
             📌 主机名： ${{ env.OPENWRT_HOSTNAME }}
             🎨 默认主题： ${{ env.OPENWRT_THEME }}
