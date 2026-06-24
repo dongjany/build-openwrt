@@ -15,16 +15,22 @@ on:
         description: "OpenWrt Source Repository (username/repo)"
         required: false
         default: "dongjany/openwrt"
-      # 源码分支
+      # 源码分支 默认改为24.10
       source_branch:
         description: "Git Branch To Pull"
         required: false
-        default: "main"
+        default: "24.10"
       # 根分区大小 CONFIG_TARGET_ROOTFS_PARTSIZE
       target_rootfs_partsize:
         description: "RootFS 分区大小 (MB)"
         required: false
         default: "160"
+      # 无.config时自动填入的基础配置
+      base_config_text:
+        description: "源码无.config时写入的基础平台配置，填写TARGET架构等核心配置"
+        required: false
+        type: textarea
+        default: ""
       # LAN IP
       openwrt_ip:
         description: "Set OpenWrt default ip address."
@@ -71,8 +77,9 @@ jobs:
     runs-on: ubuntu-24.04
     env:
       SOURCE_REPO: ${{ github.event.inputs.source_repo || 'dongjany/openwrt' }}
-      SOURCE_BRANCH: ${{ github.event.inputs.source_branch || 'main' }}
+      SOURCE_BRANCH: ${{ github.event.inputs.source_branch || '24.10' }}
       ROOTFS_SIZE: ${{ github.event.inputs.target_rootfs_partsize || '160' }}
+      BASE_CONFIG: ${{ github.event.inputs.base_config_text }}
       OPENWRT_IP: ${{ github.event.inputs.openwrt_ip || '192.168.5.55' }}
       OPENWRT_THEME: ${{ github.event.inputs.openwrt_theme || 'luci-theme-argon' }}
       OPENWRT_HOSTNAME: ${{ github.event.inputs.openwrt_hostname || 'iStoreOS' }}
@@ -147,10 +154,20 @@ jobs:
           ./diy_custom.sh
           echo -e "\033[32m==================== 自定义DIY脚本执行完成 ====================\033[0m"
 
-      - name: Set RootFS Partition Size & Extra Packages
+      - name: Init .config + 写入基础配置/分区/软件包
         run: |
-          echo -e "\033[34m===== 配置分区大小与额外软件包 =====\033[0m"
-          # 覆盖根分区大小
+          echo -e "\033[34m===== 初始化.config、配置分区大小与额外软件包 =====\033[0m"
+          # 判断是否存在.config，不存在则新建并填入用户基础配置
+          if [ ! -f .config ]; then
+            touch .config
+            echo "源码未自带.config，已新建空配置文件"
+            if [[ -n "${BASE_CONFIG}" ]]; then
+              echo "${BASE_CONFIG}" >> .config
+              echo "已将输入的基础平台配置写入.config"
+            fi
+          fi
+
+          # 写入根分区大小
           echo "CONFIG_TARGET_ROOTFS_PARTSIZE=${ROOTFS_SIZE}" >> .config
           echo "已设置分区大小: CONFIG_TARGET_ROOTFS_PARTSIZE=${ROOTFS_SIZE}"
 
@@ -210,6 +227,7 @@ jobs:
             📂 源码仓库：https://github.com/${{ env.SOURCE_REPO }}
             🌿 编译分支：${{ env.SOURCE_BRANCH }}
             💾 根分区大小：${{ env.ROOTFS_SIZE }} MB
+            ⚙️ 基础平台配置：${{ if env.BASE_CONFIG != '' }}已填写${{ else }}无${{ endif }}
             📦 额外软件包：${{ if env.EXTRA_PKGS != '' }}已配置${{ else }}无${{ endif }}
             🛠️ 自定义DIY脚本：${{ if env.DIY_SCRIPT != '' }}已启用${{ else }}未填写${{ endif }}
 
