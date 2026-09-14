@@ -1,17 +1,22 @@
-rm -rf package/network/config/firewall4 package/network/utils/nftables package/libs/libnftnl
+#!/bin/bash
 
-# 拉 immortalwrt
-git clone --depth=1 --branch openwrt-25.12 --filter=blob:none --sparse https://github.com/immortalwrt/immortalwrt tmp_imm
-cd tmp_imm
-git sparse-checkout set package/network/config/firewall4 package/network/utils/nftables package/libs/libnftnl
-cd ..
-cp -r tmp_imm/package/network/config/firewall4 package/network/config/
-cp -r tmp_imm/package/network/utils/nftables package/network/utils/
-cp -r tmp_imm/package/libs/libnftnl package/libs/
-rm -rf tmp_imm
+git_clone_path() {
+    local BRANCH="$1"
+    local REPO="$2"
+    shift 2
+    local DIRS="$@"
+    local TMPDIR="tmp_imm"
 
-# 修复 fullconenat-nft 报错
-sed -i 's/PKG_RELEASE:=$(AUTORELEASE)/PKG_RELEASE:=3/g' package/network/utils/fullconenat-nft/Makefile
+    git clone --depth=1 --branch "${BRANCH}" "${REPO}" "${TMPDIR}"
+    for p in ${DIRS}; do
+        cp -r "${TMPDIR}/${p}" "$(dirname ${p})/"
+    done
+    rm -rf "${TMPDIR}"
+}
+
+# ========== 替换 firewall4 nftables libnftnl fullconenat-nft ==========
+rm -rf package/network/config/firewall4 package/network/utils/nftables package/libs/libnftnl package/network/utils/fullconenat-nft
+git_clone_path openwrt-25.12 https://github.com/immortalwrt/immortalwrt package/network/config/firewall4 package/network/utils/nftables package/libs/libnftnl package/network/utils/fullconenat-nft
 
 # Add a feed source
 echo "src-git kenzo https://github.com/kenzok8/openwrt-packages" >> feeds.conf.default
