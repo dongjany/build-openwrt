@@ -10,7 +10,7 @@ svn export https://github.com/immortalwrt/immortalwrt/branches/openwrt-25.12/pac
 svn export https://github.com/immortalwrt/immortalwrt/branches/openwrt-25.12/package/network/utils/iptables package/network/utils/iptables
 
 # 修复 fullconenat-nft 报错
-sed -i 's/PKG_RELEASE:=$(AUTORELEASE)/PKG_RELEASE:=1/g' package/network/utils/fullconenat-nft/Makefile
+sed -i 's/PKG_RELEASE:=$(AUTORELEASE)/PKG_RELEASE:=3/g' package/network/utils/fullconenat-nft/Makefile
 
 # Add a feed source
 echo "src-git kenzo https://github.com/kenzok8/openwrt-packages" >> feeds.conf.default
