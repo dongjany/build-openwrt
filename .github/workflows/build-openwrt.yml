@@ -94,14 +94,14 @@ jobs:
       if: (!cancelled())
       run: df -hT
   
-    - name: 整理固件文件
+    - name: Organize files
       id: organize
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
         cd openwrt/bin/targets/*/*
-        rm -rf packages config.buildinfo feeds.buildinfo version.buildinfo sha256sums profiles.json *.sha *.manifest
+        rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-        echo "status=success" >> ${GITHUB_OUTPUT}
+        echo "status=success" >> $GITHUB_OUTPUT
 
     - name: 生成发布标签
       id: tag
