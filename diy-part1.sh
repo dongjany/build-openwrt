@@ -16,7 +16,7 @@ git_clone_path() {
 
 # ========== 替换 firewall firewall4 nftables libnftnl iptables fullconenat-nft ==========
 rm -rf package/network/config/firewall package/network/config/firewall4 package/network/utils/nftables package/libs/libnftnl package/network/utils/iptables package/network/utils/fullconenat-nft
-git_clone_path openwrt-25.12 https://github.com/immortalwrt/immortalwrt package/network/config/firewall package/network/config/firewall4 package/network/utils/nftables package/libs/libnftnl package/network/utils/iptables package/network/utils/fullconenat-nft
+git_clone_path openwrt-24.10 https://github.com/immortalwrt/immortalwrt package/network/config/firewall package/network/config/firewall4 package/network/utils/nftables package/libs/libnftnl package/network/utils/iptables package/network/utils/fullconenat-nft
 
 # Add a feed source
 echo "src-git kenzo https://github.com/kenzok8/openwrt-packages" >> feeds.conf.default
