@@ -19,4 +19,4 @@ rm -rf package/network/config/firewall package/network/config/firewall4 package/
 git_clone_path openwrt-24.10 https://github.com/immortalwrt/immortalwrt package/network/config/firewall package/network/config/firewall4 package/network/utils/nftables package/libs/libnftnl package/network/utils/iptables package/network/utils/fullconenat-nft
 
 # Add a feed source
-echo "src-git kenzo https://github.com/kenzok8/openwrt-packages" >> feeds.conf.default
+echo "src-git immortalwrt https://github.com/immortalwrt/luci.git;openwrt-24.10" >> feeds.conf.default
