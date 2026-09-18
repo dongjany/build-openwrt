@@ -100,7 +100,10 @@ jobs:
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
         cd openwrt/bin/targets/*/*
+        # 删除全部多余生成文件
         rm -rf packages config.buildinfo feeds.buildinfo version.buildinfo sha256sums profiles.json *.sha *.manifest
+        # 复制顶层编译产生的 .config 到固件目录并重命名为 config
+        cp openwrt/.config ./config
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> ${GITHUB_OUTPUT}
 
@@ -114,7 +117,7 @@ jobs:
         echo "status=success" >> $GITHUB_OUTPUT
  
     - name: 自动发布固件到 Releases
-      uses: softprops/action-gh-release@v2.1.0
+      uses: softprops/action-gh-release@master
       if: steps.tag.outputs.status == 'success' && !cancelled()
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
