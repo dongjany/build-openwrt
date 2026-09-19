@@ -95,17 +95,14 @@ jobs:
       if: (!cancelled())
       run: df -hT
   
-    - name: 整理固件文件
+    - name: Organize files
       id: organize
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
         cd openwrt/bin/targets/*/*
-        # 删除全部多余生成文件
-        rm -rf packages config.buildinfo feeds.buildinfo version.buildinfo sha256sums profiles.json *.sha *.manifest
-        # 复制顶层编译产生的 .config 到固件目录并重命名为 config
-        cp openwrt/.config ./config
+        rm -rf packages feeds.buildinfo version.buildinfo sha256sums profiles.json *.sha *.manifest
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-        echo "status=success" >> ${GITHUB_OUTPUT}
+        echo "status=success" >> $GITHUB_OUTPUT
 
     - name: 生成发布标签
       id: tag
