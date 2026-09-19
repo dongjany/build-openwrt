@@ -1,19 +1,11 @@
 #!/bin/bash
 # DIY‑PART2: feeds install之后编译前 | Lienol‑OpenWrt 25.12
 set -euo pipefail
-cd openwrt
-
-cp -f ../.config .config
-make defconfig
 
 # 修改主机名，取消注释启用
 # NEW_HOSTNAME="Lienol‑Wrt"
 # sed -i "s/OpenWrt/${NEW_HOSTNAME}/g" package/base-files/files/etc/hostname
 # sed -i "s/option hostname 'OpenWrt'/option hostname '${NEW_HOSTNAME}'/g" package/base-files/files/etc/config/system
-
-# 设置东八区时区（已启用）
-sed -i "s/'UTC'/'CST‑8'/g" package/base-files/files/etc/config/system
-sed -i "s/UTC/CST‑8/g" package/base-files/files/TZ
 
 # 修改LAN网关IP，取消注释启用
 # LAN_IP="192.168.1.1"
@@ -28,11 +20,3 @@ uci set luci.main.mediaurlbase='/luci-static/${LUCI_THEME}'
 uci commit luci
 EOF
 chmod +x package/base-files/files/etc/uci-defaults/99-set-luci-theme
-
-# SSH登录banner
-cat > package/base-files/files/etc/banner <<EOF
-=============================================
-      Lienol‑OpenWrt 25.12 Custom Build
-      Build: $(date +%Y‑%m‑%d)
-=============================================
-EOF
